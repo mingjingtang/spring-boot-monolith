@@ -5,7 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +15,18 @@ public class User {
 
     @Column
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_profile_id")
+    private UserProfile userProfile;
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 
     public User() {}
 
