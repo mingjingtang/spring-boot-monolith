@@ -1,6 +1,7 @@
 package com.example.springbootmonolith.service;
 
 import com.example.springbootmonolith.models.User;
+import com.example.springbootmonolith.models.UserRole;
 import com.example.springbootmonolith.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserRoleService userRoleService;
+
     @Override
     public Iterable<User> listUser() {
         return userRepository.findAll();
@@ -20,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User signUp(User user) {
+        UserRole userRole = userRoleService.getRole(user.getUserRole().getName());
+        user.setUserRole(userRole);
         return userRepository.save(user);
     }
 

@@ -1,7 +1,15 @@
 package com.example.springbootmonolith.models;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import javax.persistence.*;
+import java.util.List;
+
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Entity
 @Table
 public class UserRole {
@@ -13,6 +21,17 @@ public class UserRole {
 
     @Column(unique = true)
     private String name;
+    
+    @OneToMany(mappedBy = "userRole", cascade = CascadeType.ALL)
+    private List<User> users;
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 
     public UserRole(){}
 
