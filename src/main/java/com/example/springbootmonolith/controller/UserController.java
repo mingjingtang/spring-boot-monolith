@@ -31,4 +31,9 @@ public class UserController {
     public void delete(@PathVariable Long userId){
         userService.deleteById(userId);
     }
+
+    @PutMapping("/{username}/{courseId}")
+    public User addCourse(@PathVariable String username, @PathVariable int courseId){
+        return userService.addCourse(username, courseId);
+    }
 }

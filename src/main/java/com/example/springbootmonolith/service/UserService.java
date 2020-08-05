@@ -11,4 +11,5 @@ public interface UserService {
     public User login(User user);
     public void deleteById(Long userId);
     public User getUser(String username);
+    public User addCourse(String username, int courseId);
 }
