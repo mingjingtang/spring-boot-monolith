@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService extends UserDetailsService {
     public Iterable<User> listUser();
-    public User signUp(User user);
-    public User login(User user);
+    public String signUp(User user);
+    public String login(User user);
     public void deleteById(Long userId);
     public User getUser(String username);
     public User addCourse(String username, int courseId);

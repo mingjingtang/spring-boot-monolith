@@ -1,5 +1,6 @@
 package com.example.springbootmonolith.service;
 
+import com.example.springbootmonolith.config.JwtUtil;
 import com.example.springbootmonolith.models.Course;
 import com.example.springbootmonolith.models.User;
 import com.example.springbootmonolith.models.UserRole;
@@ -34,21 +35,36 @@ public class UserServiceImpl implements UserService {
     @Qualifier("encoder")
     PasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     @Override
     public Iterable<User> listUser() {
         return userRepository.findAll();
     }
 
     @Override
-    public User signUp(User user) {
+    public String signUp(User user) {
         UserRole userRole = userRoleService.getRole(user.getUserRole().getName());
         user.setUserRole(userRole);
-        return userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+        if(savedUser.getUsername() != null && savedUser.getPassword() != null){
+            UserDetails userDetails= loadUserByUsername(savedUser.getUsername());
+            return jwtUtil.generateToken(userDetails);
+        }
+        else{
+            return null;
+        }
     }
 
     @Override
-    public User login(User user) {
-        return userRepository.login(user.getUsername(), user.getPassword());
+    public String login(User user) {
+        if(userRepository.login(user.getUsername(), user.getPassword()) != null){
+            UserDetails userDetails = loadUserByUsername(user.getUsername());
+            return jwtUtil.generateToken(userDetails);
+        }
+        return null;
     }
 
     @Override

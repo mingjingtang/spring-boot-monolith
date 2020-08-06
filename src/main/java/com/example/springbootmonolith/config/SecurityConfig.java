@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
@@ -46,5 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/role/**").hasRole("DBA")
                 .and()
                 .httpBasic();
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

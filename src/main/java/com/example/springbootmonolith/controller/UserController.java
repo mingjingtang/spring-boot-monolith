@@ -1,8 +1,10 @@
 package com.example.springbootmonolith.controller;
 
+import com.example.springbootmonolith.models.JwtResponse;
 import com.example.springbootmonolith.models.User;
 import com.example.springbootmonolith.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +21,13 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public User signUp(@RequestBody User user){
-        return userService.signUp(user);
+    public ResponseEntity<?> signUp(@RequestBody User user){
+        return ResponseEntity.ok(new JwtResponse(userService.signUp(user)));
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody User user){
-        return userService.login(user);
+    public ResponseEntity<?> login(@RequestBody User user){
+        return ResponseEntity.ok(new JwtResponse(userService.login(user)));
     }
 
     @DeleteMapping("user/{userId}")
