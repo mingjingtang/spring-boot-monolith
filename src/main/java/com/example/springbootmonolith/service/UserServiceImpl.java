@@ -6,10 +6,16 @@ import com.example.springbootmonolith.models.UserRole;
 import com.example.springbootmonolith.repositories.CourseRepository;
 import com.example.springbootmonolith.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -23,6 +29,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    @Qualifier("encoder")
+    PasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Iterable<User> listUser() {
@@ -57,5 +67,24 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username);
         user.addCourse(course);
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUser(username);
+
+        if(user==null)
+            throw new UsernameNotFoundException("User null");
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), bCryptPasswordEncoder.encode(user.getPassword()),
+                true, true, true, true, getGrantedAuthorities(user));
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(User user){
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
+        authorities.add(new SimpleGrantedAuthority(user.getUserRole().getName()));
+
+        return authorities;
     }
 }

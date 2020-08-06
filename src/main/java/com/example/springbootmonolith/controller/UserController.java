@@ -3,16 +3,17 @@ package com.example.springbootmonolith.controller;
 import com.example.springbootmonolith.models.User;
 import com.example.springbootmonolith.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/list")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("user/list")
     public Iterable<User> listUsers(){
         return userService.listUser();
     }
@@ -27,12 +28,12 @@ public class UserController {
         return userService.login(user);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("user/{userId}")
     public void delete(@PathVariable Long userId){
         userService.deleteById(userId);
     }
 
-    @PutMapping("/{username}/{courseId}")
+    @PutMapping("user/{username}/{courseId}")
     public User addCourse(@PathVariable String username, @PathVariable int courseId){
         return userService.addCourse(username, courseId);
     }
