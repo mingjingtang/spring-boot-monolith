@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
 
+    @GetMapping("/hello")
+    public String helloWorld(){
+        return "Hello World!!";
+    }
+
     @Autowired
     private UserService userService;
 
