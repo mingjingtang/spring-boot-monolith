@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     JwtUtil jwtUtil;
 
     @Override
-    public Iterable<User> listUser() {
+    public List<User> listUser() {
         return userRepository.findAll();
     }
 

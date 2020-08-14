@@ -4,6 +4,8 @@ import com.example.springbootmonolith.models.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
@@ -11,5 +13,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
     public User login(String username, String password);
 
     public User findByUsername(String username);
+
+    @Override
+    public List<User> findAll();
 
 }
