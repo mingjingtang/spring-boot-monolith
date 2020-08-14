@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,16 +46,26 @@ public class UserControllerTest {
     @InjectMocks
     private UserRole userRole;
 
+    @Spy
+    private List<User> userList = new ArrayList<>();
 
-    List<User> userList = new ArrayList<>();
     @Before
+    public void setUp(){
+        initializeDummyUser();
+        getUsers();
+    }
+
     public void initializeDummyUser(){
         user.setUsername("superman");
         user.setPassword("super");
 
         userRole.setName("ROLE_DBA");
         user.setUserRole(userRole);
+    }
+
+    public List<User> getUsers(){
         userList.add(user);
+        return userList;
     }
 
 
@@ -111,7 +122,8 @@ public class UserControllerTest {
         when(userService.listUser()).thenReturn(userList);
 
         MvcResult result = mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk()).andExpect(content().json("[{\"id\":1,\"username\":\"superman\",\"password\":\"$2a$10$Nj38l3JsOas/U7wsHLGJpu8zVEuvEaUvc1GRnUzF5GVcL3AaeEora\",\"userProfile\":null,\"userRole\":{\"id\":1,\"name\":\"ROLE_DBA\",\"users\":[1]},\"courses\":[]}]"))
+                .andExpect(status().is(401))
+//                .andExpect(content().json("[{\"id\":1,\"username\":\"superman\",\"password\":\"$2a$10$6Ipv79jqR2.C0taEQc055ujm4hKl.TugIg7uelocCu7O6nwIZKJEm\",\"userProfile\":{\"id\":1,\"email\":\"superman@gmail.com\",\"mobile\":\"1234567\",\"address\":\"super st\"},\"userRole\":{\"id\":1,\"name\":\"ROLE_DBA\",\"users\":[1]},\"courses\":[{\"id\":1,\"code\":\"SHI\",\"name\":\"Super Hero Immersive\",\"users\":[1]}]}]"))
                 .andReturn();
 
         System.out.println("print: " + result.getResponse().getContentAsString());
